@@ -1,0 +1,121 @@
+body {
+  font-family: Helvetica, sans-serif;
+}
+
+header {
+  padding: 20px 0;
+}
+
+header h1 {
+  margin: 0;
+}
+
+main {
+  padding: 20px;
+}
+
+.sound-player {
+  text-align: center;
+}
+
+.search-box {
+  margin-top: 20px;
+}
+
+input[type="text"] {
+  width: 100%;
+}
+
+#autofillSuggestions {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  background-color: #343a40; /* Dark background color */
+}
+
+#autofillSuggestions li {
+  padding: 10px;
+  cursor: pointer;
+  color: #ffffff; /* White text color */
+  background-color: #343a40;
+}
+
+#autofillSuggestions li:hover {
+  background-color: #495057; /* Darker background color on hover */
+}
+
+/* Apply dark mode style to the dropdown menu at all times */
+.autofill-dropdown {
+  background-color: #343a40 !important; /* Dark background color */
+  color: #ffffff !important; /* White text color */
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Optional: Add shadow for depth */
+}
+
+.buttons {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.buttons button {
+  margin: 5px;
+  padding: 10px 20px;
+  background-color: #444; /* Dark grey */
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+.buttons button.hidden {
+  display: none;
+}
+
+.buttons button#skipButton {
+  background-color: red;
+}
+
+.buttons button.selected {
+  background-color: #737973; /* Change to your desired color */
+}
+
+.guess {
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+
+.correct {
+  background-color: #1fa424; /* Light green */
+}
+
+.incorrect,
+.skipped {
+  background-color: #da3e4e; /* Light red */
+}
+
+.guess i {
+  margin-right: 5px;
+}
+
+/* CSS for "out-of-guesses" message */
+.guess.out-of-guesses {
+  background-color: #ffcccb; /* Light red background */
+  color: #ff0000; /* Red text color */
+  padding: 10px; /* Padding around the message */
+  margin-bottom: 5px; /* Margin below the message */
+}
+
+/* CSS for "correct-answer" message */
+.guess.correct-answer {
+  background-color: #90ee90; /* Light green background */
+  color: #008000; /* Green text color */
+  padding: 10px; /* Padding around the message */
+  margin-bottom: 5px; /* Margin below the message */
+}
+
+/* Style for answer message */
+#answerMessage {
+  display: none;
+  color: green;
+  font-weight: bold;
+}

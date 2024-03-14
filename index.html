@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Raaga Lahari</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="bg-dark text-white">
+    <header class="bg-dark">
+      <div class="container">
+        <h1 class="text-white">Raaga Lahari</h1>
+        <nav></nav>
+      </div>
+    </header>
+
+    <main class="container mt-4">
+      <div class="sound-player">
+        <!-- Sound Player Goes Here -->
+        <audio controls id="audioPlayer">
+          Your browser does not support the audio element.
+        </audio>
+      </div>
+
+      <div class="buttons">
+        <button id="button1" class="btn btn-dark hidden">1</button>
+        <button id="button2" class="btn btn-dark hidden">2</button>
+        <button id="button3" class="btn btn-dark hidden">3</button>
+        <button id="button4" class="btn btn-dark hidden">4</button>
+        <button id="button5" class="btn btn-dark hidden">5</button>
+        <button id="skipButton" class="btn btn-danger">Skip</button>
+      </div>
+
+      <!-- Correct answer message -->
+      <div id="answerMessage" class="mt-3 text-success" style="display: none">
+        Correct Answer!
+      </div>
+
+      <div id="guesses" class="mt-3"></div>
+
+      <div class="search-box mt-4">
+        <input
+          type="text"
+          id="searchInput"
+          class="form-control"
+          placeholder="Enter track name..."
+        />
+        <ul id="autofillSuggestions" class="autofill-dropdown"></ul>
+      </div>
+      <button id="submitButton" type="button" class="btn btn-primary mt-3">
+        Submit
+      </button>
+
+      <div id="trackInfo" class="mt-4"></div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
