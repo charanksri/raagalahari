@@ -236,7 +236,7 @@ document.getElementById("skipButton").addEventListener("click", async () => {
     // Reveal the correct answer
     const correctAnswerElement = document.createElement("div");
     correctAnswerElement.classList.add("guess", "correct-answer");
-    correctAnswerElement.textContent = `Correct answer: ${correctTrackName}`;
+    correctAnswerElement.textContent = `Correct answer: ${correctTrackName} from Shankar Dada Zindabad`;
     guessesContainer.appendChild(correctAnswerElement);
   }
 });
@@ -305,7 +305,7 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     // Reveal the correct answer
     const correctAnswerElement = document.createElement("div");
     correctAnswerElement.classList.add("guess", "correct-answer");
-    correctAnswerElement.textContent = `Correct answer: ${correctTrackName}`;
+    correctAnswerElement.textContent = `Correct answer: ${correctTrackName} from Shankar Dada Zindabad`;
     guessesContainer.appendChild(correctAnswerElement);
   }
 
