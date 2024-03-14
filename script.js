@@ -169,7 +169,9 @@ async function displayTrackInfo(trackName, accessToken) {
         .join(", ")}</p>
       <p>Album: ${trackDetails.album.name}</p>
       <p>Country Code: ${countryCode}</p>
-      <img src="${trackDetails.album.images[0].url}" alt="Album Art">
+      <img src="${
+        trackDetails.album.images[0].url
+      }" alt="Album Art" style="max-width: 100%; height: auto;">
     `;
   } catch (error) {
     console.error("Error displaying track information:", error);
