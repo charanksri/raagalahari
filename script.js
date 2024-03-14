@@ -1,6 +1,6 @@
 // Array of track URLs for each button
 const trackUrls = [
-  "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint1.mp3",
+  "https://github.com/charanksri/raagalahari/raw/main/hint1.mp3",
   "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint2.mp3",
   "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint3.mp3",
   "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint4.mp3",
