@@ -1,15 +1,15 @@
 // Array of track URLs for each button
 const trackUrls = [
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3",
-  "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
+  "https://github.com/charanksri/raagalahari/blob/main/hint1.mp3",
+  "https://github.com/charanksri/raagalahari/blob/main/hint2.mp3",
+  "https://github.com/charanksri/raagalahari/blob/main/hint3.mp3",
+  "https://github.com/charanksri/raagalahari/blob/main/hint4.mp3",
+  "https://github.com/charanksri/raagalahari/blob/main/hint5.mp3",
 ];
 
 // Initialize variables
 let currentTrackIndex = 1;
-const correctTrackName = "Nuvvu Nuvvu"; // Replace with the correct track name
+const correctTrackName = "Good Morning"; // Replace with the correct track name
 
 // Function to reveal all buttons and tracks
 function revealAllButtons() {
