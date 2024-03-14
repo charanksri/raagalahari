@@ -9,7 +9,7 @@ const trackUrls = [
 
 // Initialize variables
 let currentTrackIndex = 1;
-const correctTrackName = "Good Morning"; // Replace with the correct track name
+const correctTrackName = "Gappu Chippu"; // Replace with the correct track name
 
 // Function to reveal all buttons and tracks
 function revealAllButtons() {
@@ -236,7 +236,7 @@ document.getElementById("skipButton").addEventListener("click", async () => {
     // Reveal the correct answer
     const correctAnswerElement = document.createElement("div");
     correctAnswerElement.classList.add("guess", "correct-answer");
-    correctAnswerElement.textContent = `Correct answer: ${correctTrackName} from Shankar Dada Zindabad`;
+    correctAnswerElement.textContent = `Correct answer: ${correctTrackName} from Tagore`;
     guessesContainer.appendChild(correctAnswerElement);
   }
 });
@@ -305,7 +305,7 @@ document.getElementById("submitButton").addEventListener("click", async () => {
     // Reveal the correct answer
     const correctAnswerElement = document.createElement("div");
     correctAnswerElement.classList.add("guess", "correct-answer");
-    correctAnswerElement.textContent = `Correct answer: ${correctTrackName} from Shankar Dada Zindabad`;
+    correctAnswerElement.textContent = `Correct answer: ${correctTrackName} from Tagore`;
     guessesContainer.appendChild(correctAnswerElement);
   }
 
