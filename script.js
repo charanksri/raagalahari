@@ -1,10 +1,10 @@
 // Array of track URLs for each button
 const trackUrls = [
-  "https://github.com/charanksri/raagalahari/blob/main/hint1.mp3",
-  "https://github.com/charanksri/raagalahari/blob/main/hint2.mp3",
-  "https://github.com/charanksri/raagalahari/blob/main/hint3.mp3",
-  "https://github.com/charanksri/raagalahari/blob/main/hint4.mp3",
-  "https://github.com/charanksri/raagalahari/blob/main/hint5.mp3",
+  "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint1.mp3",
+  "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint2.mp3",
+  "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint3.mp3",
+  "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint4.mp3",
+  "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
 ];
 
 // Initialize variables
