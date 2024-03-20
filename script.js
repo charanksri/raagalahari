@@ -1,25 +1,3 @@
-// Array of track URLs for each button
-const trackUrls = [
-  "https://github.com/charanksri/raagalahari/raw/main/hint1.mp3",
-  "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint2.mp3",
-  "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint3.mp3",
-  "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint4.mp3",
-  "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
-];
-
-// Initialize variables
-let currentTrackIndex = 1;
-const correctTrackName = "Gappu Chippu"; // Replace with the correct track name
-
-// Function to reveal all buttons and tracks
-function revealAllButtons() {
-  for (let i = 0; i < trackUrls.length; i++) {
-    const buttonId = "button" + (i + 1);
-    const trackUrl = trackUrls[i];
-    showButton(buttonId, trackUrl);
-  }
-}
-
 // Function to authenticate and get access token
 async function authenticate() {
   const clientId = "737cd1dc8e6a4dee9c73becd0e05eb47";
@@ -99,7 +77,6 @@ async function populateAutofill(query) {
 }
 
 // Attach event listener for input field
-// Attach event listener for input field
 document.getElementById("searchInput").addEventListener("input", (event) => {
   const query = event.target.value.trim(); // Trim whitespace
   if (query.length > 0) {
@@ -136,235 +113,138 @@ async function fetchTrackDetails(trackId, accessToken) {
   }
 }
 
-// Function to display track information
-async function displayTrackInfo(trackName, accessToken) {
-  const query = encodeURIComponent(trackName);
-  try {
-    const response = await fetch(
-      `https://api.spotify.com/v1/search?q=${query}&type=track&limit=1`,
-      {
-        headers: {
-          Authorization: "Bearer " + accessToken,
-        },
-      }
-    );
+document.addEventListener("DOMContentLoaded", function () {
+  const audioPlayer = document.getElementById("audioPlayer");
+  const trackButtons = document.querySelectorAll(".button-container button");
+  let currentIndex = 0;
+  // Global variables to track status messages
+  let wrongAnswersCount = 0;
+  let skippedCount = 0;
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch track information");
+  // Array of track URLs
+  const trackURLs = [
+    "https://github.com/charanksri/raagalahari/raw/main/hint1.mp3",
+    "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint2.mp3",
+    "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint3.mp3",
+    "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint4.mp3",
+    "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
+  ];
+
+  // Define the correct answer track name
+  const correctAnswerTrackName = "Nee Dookudu";
+
+  // Function to reveal next button and track
+  function revealNextTrack() {
+    if (currentIndex < trackButtons.length) {
+      trackButtons[currentIndex].classList.remove("d-none"); // Revealing next button
+      audioPlayer.src = trackURLs[currentIndex]; // Setting the next track
+      audioPlayer.play(); // Start playing the track
+      currentIndex++; // Increment index for the next track
     }
-
-    const data = await response.json();
-    const track = data.tracks.items[0];
-    const trackDetails = await fetchTrackDetails(track.id, accessToken);
-
-    // Extract country code from ISRC
-    const countryCode = trackDetails.external_ids.isrc.substring(0, 2);
-
-    // Display track information
-    const trackInfoContainer = document.getElementById("trackInfo");
-    trackInfoContainer.innerHTML = `
-      <h2>${trackDetails.name}</h2>
-      <p>Artist: ${trackDetails.artists
-        .map((artist) => artist.name)
-        .join(", ")}</p>
-      <p>Album: ${trackDetails.album.name}</p>
-      <p>Country Code: ${countryCode}</p>
-      <img src="${
-        trackDetails.album.images[0].url
-      }" alt="Album Art" style="max-width: 100%; height: auto;">
-    `;
-  } catch (error) {
-    console.error("Error displaying track information:", error);
-    // Handle error accordingly
-  }
-}
-
-// Initialize variables to track guesses and skips
-let incorrectGuessesCount = 0;
-let skipsCount = 0;
-
-// Function to handle track submission
-async function handleTrackSubmission(trackName) {
-  const displayedTrackName = document
-    .getElementById("trackInfo")
-    .querySelector("h2").textContent;
-  const guessesContainer = document.getElementById("guesses");
-
-  // Create a new guess element
-  const guessElement = document.createElement("div");
-
-  // Determine if the guess is correct or skipped
-  const isCorrectGuess =
-    trackName.toLowerCase() === correctTrackName.toLowerCase();
-  const isSkipped = trackName.trim() === "";
-}
-
-// Attach event listener to the skip button
-document.getElementById("skipButton").addEventListener("click", async () => {
-  // Increment skips count
-  skipsCount++;
-
-  // Reveal the next hidden button
-  const hiddenButton = document.querySelector(".buttons button.hidden");
-  if (hiddenButton) {
-    hiddenButton.classList.remove("hidden");
   }
 
-  // Handle the skip button click
-  handleTrackSubmission("");
+  // Function to reveal all tracks
+  function revealAllTracks() {
+    for (let i = 0; i < trackButtons.length; i++) {
+      trackButtons[i].classList.remove("d-none"); // Revealing all buttons
+    }
+  }
 
-  // Display the skipped message
-  const skipMessage = document.createElement("div");
-  skipMessage.classList.add("guess", "skipped");
-  skipMessage.innerHTML = `<i class="fas fa-exclamation"></i> Skipped`;
-  const guessesContainer = document.getElementById("guesses");
-  guessesContainer.appendChild(skipMessage);
-
-  // Disable both submit and skip buttons if the sum of incorrect guesses and skips is 5
-  if (incorrectGuessesCount + skipsCount === 5) {
-    document.getElementById("searchInput").disabled = true;
+  // Function to disable submit and skip buttons
+  function disableButtons() {
     document.getElementById("submitButton").disabled = true;
-    document.getElementById("skipButton").disabled = true;
-
-    // Display out of guesses message and reveal correct answer
-    const outOfGuessesMessage = document.createElement("div");
-    outOfGuessesMessage.classList.add("guess", "out-of-guesses");
-    outOfGuessesMessage.textContent = "Out of guesses";
-    const guessesContainer = document.getElementById("guesses");
-    guessesContainer.appendChild(outOfGuessesMessage);
-
-    // Reveal the correct answer
-    const correctAnswerElement = document.createElement("div");
-    correctAnswerElement.classList.add("guess", "correct-answer");
-    correctAnswerElement.textContent = `Correct answer: ${correctTrackName} from Tagore`;
-    guessesContainer.appendChild(correctAnswerElement);
-  }
-});
-
-// Attach event listener to the submit button
-document.getElementById("submitButton").addEventListener("click", async () => {
-  const selectedTrack = document.getElementById("searchInput").value.trim(); // Trim whitespace
-
-  // Check if the input field is empty
-  if (selectedTrack === "") {
-    // If the input field is empty, do nothing
-    return;
+    document.getElementById("skipTrack").disabled = true;
   }
 
-  // Proceed with handling the track submission
-  const accessToken = await authenticate(); // Get the access token
-  await displayTrackInfo(selectedTrack, accessToken);
-
-  // Create a new guess element
-  const guessElement = document.createElement("div");
-  const guessesContainer = document.getElementById("guesses");
-
-  // Determine if the guess is correct, incorrect, or skipped
-  const displayedTrackName = document
-    .getElementById("trackInfo")
-    .querySelector("h2").textContent;
-  const isCorrectGuess =
-    selectedTrack.toLowerCase() === correctTrackName.toLowerCase();
-  const isSkipped = selectedTrack.trim() === "";
-  const isIncorrectGuess = !isCorrectGuess && !isSkipped;
-
-  // Increment incorrect guesses count if the guess is not skipped and incorrect
-  if (isIncorrectGuess) {
-    incorrectGuessesCount++;
+  // Function to add status message
+  function addStatus(message, color) {
+    const statusContainer = document.getElementById("statusContainer");
+    const statusElement = document.createElement("div");
+    statusElement.classList.add("status");
+    statusElement.style.backgroundColor = color;
+    statusElement.innerHTML = message; // Set the HTML content with Unicode character
+    statusContainer.appendChild(statusElement);
   }
 
-  // Display the guess with appropriate styling and icon
-  if (isCorrectGuess) {
-    guessElement.classList.add("guess", "correct");
-    guessElement.innerHTML = `<i class="fas fa-check"></i> ${selectedTrack}`;
-    document.getElementById("answerMessage").style.display = "block";
-
-    // Reveal all buttons if the guess is correct
-    revealAllButtons();
-  } else if (isIncorrectGuess) {
-    guessElement.classList.add("guess", "incorrect");
-    guessElement.innerHTML = `<i class="fas fa-times"></i> ${selectedTrack}`;
-  }
-
-  // Append the guess element to the guesses container
-  guessesContainer.appendChild(guessElement);
-
-  // If the guess is correct or skipped, display the appropriate message and disable buttons
-  if (incorrectGuessesCount + skipsCount === 5) {
-    document.getElementById("submitButton").disabled = true;
-    document.getElementById("searchInput").disabled = true;
-    document.getElementById("skipButton").disabled = true;
-
-    // Display out of guesses message and reveal correct answer
-    const outOfGuessesMessage = document.createElement("div");
-    outOfGuessesMessage.classList.add("guess", "out-of-guesses");
-    outOfGuessesMessage.textContent = "Out of guesses";
-    const guessesContainer = document.getElementById("guesses");
-    guessesContainer.appendChild(outOfGuessesMessage);
-
-    // Reveal the correct answer
-    const correctAnswerElement = document.createElement("div");
-    correctAnswerElement.classList.add("guess", "correct-answer");
-    correctAnswerElement.textContent = `Correct answer: ${correctTrackName} from Tagore`;
-    guessesContainer.appendChild(correctAnswerElement);
-  }
-
-  // Clear the text box after submitting
-  document.getElementById("searchInput").value = "";
-
-  // Reveal the next hidden button
-  const hiddenButton = document.querySelector(".buttons button.hidden");
-  if (hiddenButton) {
-    hiddenButton.classList.remove("hidden");
-  }
-});
-
-// Function to handle track selection
-function handleTrackSelection(trackUrl, buttonId) {
-  // Remove the "selected" class from all buttons
-  document.querySelectorAll(".buttons button").forEach((button) => {
-    button.classList.remove("selected");
+  // Attach click event listener to skip button
+  document.getElementById("skipTrack").addEventListener("click", () => {
+    revealNextTrack();
+    if (skippedCount + wrongAnswersCount < 5) {
+      // Add status for skipped
+      addStatus(
+        "<span class='bi bi-ban' style='color: white;'></span> Skipped",
+        "#dc3545"
+      );
+      skippedCount++;
+    } else {
+      addStatus(
+        "<span class='bi bi-dash-circle' style='color: white;'></span> Out of guesses",
+        "#2330AE"
+      ); // Add status for out of guesses
+      disableButtons(); // Disable buttons after out of guesses
+      // Display the correct answer
+      const correctAnswerMessage = document.createElement("div");
+      correctAnswerMessage.innerHTML = `The correct answer is <span class="text-success">${correctAnswerTrackName}</span>`;
+      statusContainer.appendChild(correctAnswerMessage);
+    }
   });
 
-  // Add the "selected" class to the clicked button
-  document.getElementById(buttonId).classList.add("selected");
+  // Play the first track when the page loads
+  audioPlayer.src = trackURLs[currentIndex];
+  audioPlayer.play(); // Start playing the first track
+  currentIndex++; // Move to the next track
 
-  // Play the selected track
-  const audioElement = document.getElementById("audioPlayer");
-  audioPlayer.src = trackUrl;
-  audioPlayer.load();
-  audioPlayer.play();
-
-  // Clear previous track details
-  const trackInfoContainer = document.getElementById("trackInfo");
-  trackInfoContainer.innerHTML = "";
-}
-
-// Function to show a button and handle its click event
-function showButton(buttonId, trackUrl) {
-  const button = document.getElementById(buttonId);
-  button.classList.remove("hidden");
-  button.addEventListener("click", () => handleTrackSelection(trackUrl));
-}
-
-// Function to initialize the buttons
-function initializeButtons() {
-  // Hide buttons 2 to 5 initially
-  for (let i = 2; i <= 5; i++) {
-    document.getElementById("button" + i).classList.add("hidden");
+  // Function to play a specific track
+  function playTrack(index) {
+    return function () {
+      audioPlayer.src = trackURLs[index];
+      audioPlayer.play();
+    };
   }
-}
 
-// Show button 1 initially
-document.getElementById("button1").classList.remove("hidden");
+  // Attach click event listeners to each track button
+  for (let i = 1; i <= trackURLs.length; i++) {
+    const buttonId = "track" + i;
+    document
+      .getElementById(buttonId)
+      .addEventListener("click", playTrack(i - 1));
+  }
 
-// Attach event listeners
-document.addEventListener("DOMContentLoaded", () => {
-  // Button click event listener for each button
-  document.querySelectorAll(".buttons button").forEach((button) => {
-    button.addEventListener("click", () => {
-      const trackUrl = trackUrls[parseInt(button.textContent) - 1]; // Get track URL based on button number
-      handleTrackSelection(trackUrl, button.id);
-    });
+  // Function to handle submit button click
+  document.getElementById("submitButton").addEventListener("click", () => {
+    const userInput = document.getElementById("searchInput").value.trim();
+    if (userInput === correctAnswerTrackName) {
+      revealAllTracks(); // If user input matches the correct answer, reveal all tracks
+      addStatus(
+        `<span class='bi bi-check-circle' style='color: white;'></span> ${userInput}`,
+        "#28a745"
+      ); // Checkmark icon
+      disableButtons(); // Disable buttons after correct answer
+    } else {
+      revealNextTrack();
+      if (skippedCount + wrongAnswersCount < 5) {
+        // Add status for wrong answer
+        addStatus(
+          `<span class='bi bi-ban' style='color: white;'></span> ${userInput}`,
+          "#dc3545"
+        );
+        // Display the user-submitted track name
+        wrongAnswersCount++;
+      } else {
+        addStatus(
+          "<span class='bi bi-dash-circle' style='color: white;'></span> Out of guesses",
+          "#2330AE"
+        ); // Add status for out of guesses
+        disableButtons(); // Disable buttons after out of guesses
+        // Display the correct answer
+        const correctAnswerMessage = document.createElement("div");
+        correctAnswerMessage.innerHTML = `The correct answer is <span class="text-success">${correctAnswerTrackName}</span>`;
+        statusContainer.appendChild(correctAnswerMessage);
+      }
+    }
+    // Clear the input field after submission
+    document.getElementById("searchInput").value = "";
   });
+  // Play the first track when the page loads
+  playTrack(0)();
 });

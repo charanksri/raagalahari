@@ -1,29 +1,85 @@
-body {
-  font-family: Helvetica, sans-serif;
-}
+/* Existing CSS styles for the website */
 
-header {
-  padding: 20px 0;
-}
-
-header h1 {
+/* Resetting default margins and ensuring full height */
+body,
+html {
+  height: 100%;
   margin: 0;
 }
 
-main {
-  padding: 20px;
+/* Custom styling for the navbar brand */
+.navbar-brand {
+  margin-right: auto; /* Pushes the brand to the left */
 }
 
-.sound-player {
-  text-align: center;
+/* Adjusting padding for the navbar container */
+.navbar .container-fluid {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+/* Additional styling for dark mode */
+.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+/* Additional styling for light mode */
+.light-mode {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Adding space between the header and the top of the webpage */
+header {
+  padding-top: 20px; /* Adjust this value to increase or decrease the space */
+}
+
+/* Styling for the header content */
+.header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .search-box {
-  margin-top: 20px;
+  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
 }
 
 input[type="text"] {
-  width: 100%;
+  width: 60%;
+  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sound-player {
+  width: 60%; /* Adjust the width as needed */
+  margin: 0 auto; /* Center horizontally */
+  text-align: center; /* Center the audio element */
+}
+
+.sound-player audio {
+  display: inline-block; /* Ensure audio element respects centering */
+}
+
+.button-container {
+  width: 60%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.button-container .btn {
+  margin-right: 10px;
+}
+
+/* Style for the skip button */
+.button-container #skipTrack {
+  background-color: #dc3545; /* Red color */
+  border-color: #dc3545; /* Border color same as background */
 }
 
 #autofillSuggestions {
@@ -44,78 +100,54 @@ input[type="text"] {
   background-color: #495057; /* Darker background color on hover */
 }
 
-/* Apply dark mode style to the dropdown menu at all times */
+.dropdown-container {
+  width: 60%;
+  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .autofill-dropdown {
-  background-color: #343a40 !important; /* Dark background color */
-  color: #ffffff !important; /* White text color */
+  background-color: #343a40;
+  color: #ffffff;
   border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Optional: Add shadow for depth */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.buttons {
+#submitButton {
+  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.status-container {
   text-align: center;
-  margin-top: 20px;
 }
 
-.buttons button {
-  margin: 5px;
-  padding: 10px 20px;
-  background-color: #444; /* Dark grey */
-  color: #fff;
-  border: none;
-  cursor: pointer;
-}
-
-.buttons button.hidden {
-  display: none;
-}
-
-.buttons button#skipButton {
-  background-color: red;
-}
-
-.buttons button.selected {
-  background-color: #737973; /* Change to your desired color */
-}
-
-.guess {
-  padding: 5px;
-  margin-bottom: 5px;
+.status {
+  display: block; /* Change to block display */
+  margin: 10px auto; /* Center the status messages horizontally */
+  padding: 5px 10px;
+  background-color: #dc3545;
+  color: rgb(255, 255, 255);
   border-radius: 5px;
+  width: 30%;
 }
 
-.correct {
-  background-color: #1fa424; /* Light green */
+.status span {
+  margin-right: 5px; /* Adjust spacing between icon and text */
 }
 
-.incorrect,
-.skipped {
-  background-color: #da3e4e; /* Light red */
+.custom-modal {
+  background-color: rgba(0, 0, 0, 1); /* Dark background color */
 }
 
-.guess i {
-  margin-right: 5px;
+/* Change the color of the close button (X) */
+.modal-content .close {
+  color: rgb(255, 255, 255); /* Change to your desired color */
 }
 
-/* CSS for "out-of-guesses" message */
-.guess.out-of-guesses {
-  background-color: #ffcccb; /* Light red background */
-  color: #ff0000; /* Red text color */
-  padding: 10px; /* Padding around the message */
-  margin-bottom: 5px; /* Margin below the message */
-}
-
-/* CSS for "correct-answer" message */
-.guess.correct-answer {
-  background-color: #90ee90; /* Light green background */
-  color: #008000; /* Green text color */
-  padding: 10px; /* Padding around the message */
-  margin-bottom: 5px; /* Margin below the message */
-}
-
-/* Style for answer message */
-#answerMessage {
-  display: none;
-  color: green;
-  font-weight: bold;
+/* Change the color of the close button (X) on hover */
+.modal-content .close:hover {
+  color: rgb(253, 254, 253); /* Change to your desired color */
 }
