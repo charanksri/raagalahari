@@ -167,3 +167,9 @@ input[type="text"] {
 .modal-content .close:hover {
   color: rgb(253, 254, 253); /* Change to your desired color */
 }
+
+/* Make the logo responsive */
+img {
+  max-width: 100%; /* Ensure the image doesn't exceed its container width */
+  height: auto; /* Maintain aspect ratio */
+}
