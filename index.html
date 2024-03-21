@@ -12,6 +12,14 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      integrity="sha512-9V4XuLQGqVY3dXWLeKf2yDp4zUUKxm+1WrA1Eb5XAAcOMW5pX/h8xC4PPS8YNauDKI0+LwPDP3bRU6JYt4/m+w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="bg-dark text-white">
@@ -73,7 +81,30 @@
           </div>
           <div class="modal-body">
             <!-- Add your instructions here -->
-            <p>This is where you can add your instructions.</p>
+            <p>
+              <i
+                class="bi bi-music-note-beamed"
+                style="color: white; margin-right: 5px"
+              ></i>
+              Listen to the music bit, then find the correct song.
+            </p>
+            <p>
+              <i class="bi bi-ban" style="color: white; margin-right: 5px"></i>
+              Skipped or incorrect answers unlock more music bits from the same
+              song.
+            </p>
+            <p>
+              <i
+                class="bi bi-trophy"
+                style="color: white; margin-right: 5px"
+              ></i>
+              Answer in as few tries as possible and share your score!
+            </p>
+
+            <p style="font-size: 14px; color: #777">
+              All rights go to the rightful owners - no copyright infringement
+              intended.
+            </p>
           </div>
           <div class="modal-footer">
             <button
@@ -113,7 +144,29 @@
           </div>
           <div class="modal-body">
             <!-- Add your stats content here -->
-            <p>This is where you can display your stats.</p>
+            <div id="statsSection">
+              <div class="stat">
+                <strong>Times Played:</strong> <span id="timesPlayed">0</span>
+              </div>
+              <div class="stat">
+                <strong>Times Won:</strong> <span id="timesWon">0</span>
+              </div>
+              <div class="stat">
+                <strong>Win Percentage:</strong>
+                <span id="winPercentage">0%</span>
+              </div>
+              <div class="stat">
+                <strong>Guess Distribution:</strong>
+                <div id="guessDistribution"></div>
+              </div>
+              <div class="stat">
+                <strong>Current Streak:</strong>
+                <span id="currentStreak">0</span>
+              </div>
+              <div class="stat">
+                <strong>Max Streak:</strong> <span id="maxStreak">0</span>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button
@@ -176,7 +229,23 @@
           Submit
         </button>
       </div>
-      <div class="status-container" id="statusContainer"></div>
+      <div
+        class="status-container"
+        id="statusContainer"
+        style="margin-bottom: 20px"
+      ></div>
+      <!-- Share buttons -->
+      <div id="shareContainer" class="text-center" style="display: none">
+        <button id="twitterShareBtn" class="btn btn-primary mr-2">
+          Share on <i class="bi bi-twitter"></i>
+        </button>
+        <button id="whatsappShareBtn" class="btn btn-success mr-2">
+          Share on <i class="bi bi-whatsapp"></i>
+        </button>
+        <button id="facebookShareBtn" class="btn btn-primary">
+          Share on <i class="bi bi-facebook"></i>
+        </button>
+      </div>
     </main>
 
     <script src="script.js"></script>

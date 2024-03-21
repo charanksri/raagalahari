@@ -98,6 +98,16 @@ input[type="text"] {
   border-color: #dc3545; /* Border color same as background */
 }
 
+/* Change button highlight style */
+.btn-secondary:focus,
+.btn-secondary.focus,
+.btn-secondary:active,
+.btn-secondary.active {
+  background-color: #ffc107; /* Change to your desired highlight color */
+  border-color: #ffc107; /* Change to your desired highlight color */
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5); /* Change to your desired shadow color */
+}
+
 #autofillSuggestions {
   list-style-type: none;
   padding: 0;
@@ -172,4 +182,16 @@ input[type="text"] {
 img {
   max-width: 100%; /* Ensure the image doesn't exceed its container width */
   height: auto; /* Maintain aspect ratio */
+}
+
+/* Define a class to style active buttons */
+.active-track {
+  background-color: #007bff; /* Change background color to blue or any desired color */
+  color: #fff; /* Change text color to white or any desired color */
+}
+
+/* Apply the active-track class to the active button */
+.active-track {
+  background-color: #007bff; /* Change background color to blue or any desired color */
+  color: #fff; /* Change text color to white or any desired color */
 }

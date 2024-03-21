@@ -156,6 +156,75 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("skipTrack").disabled = true;
   }
 
+  // Initialize game stats
+  let gameStats = {
+    timesPlayed: 0,
+    timesWon: 0,
+    currentStreak: 0,
+    maxStreak: 0,
+    guessDistribution: {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+    },
+  };
+
+  // Update game stats function
+  function updateGameStats() {
+    document.getElementById("timesPlayed").textContent = gameStats.timesPlayed;
+    document.getElementById("timesWon").textContent = gameStats.timesWon;
+    document.getElementById("winPercentage").textContent =
+      gameStats.timesPlayed === 0
+        ? "0%"
+        : ((gameStats.timesWon / gameStats.timesPlayed) * 100).toFixed(2) + "%";
+    document.getElementById("currentStreak").textContent =
+      gameStats.currentStreak;
+    document.getElementById("maxStreak").textContent = gameStats.maxStreak;
+
+    // Clear previous distribution
+    const guessDistribution = document.getElementById("guessDistribution");
+    guessDistribution.innerHTML = "";
+
+    // Populate new distribution
+    for (let guess in gameStats.guessDistribution) {
+      const listItem = document.createElement("li");
+      listItem.textContent = `Guess ${guess}: ${gameStats.guessDistribution[guess]}`;
+      guessDistribution.appendChild(listItem);
+    }
+  }
+
+  // Function to update guess distribution
+  function updateGuessDistribution(guess) {
+    gameStats.guessDistribution[guess]++;
+    updateGameStats();
+  }
+
+  // Function to update streak
+  function updateStreak() {
+    gameStats.currentStreak++;
+    gameStats.maxStreak = Math.max(
+      gameStats.maxStreak,
+      gameStats.currentStreak
+    );
+    updateGameStats();
+  }
+
+  // Function to reset streak
+  function resetStreak() {
+    gameStats.currentStreak = 0;
+    updateGameStats();
+  }
+
+  // Attach click event listeners to each track button
+  for (let i = 1; i <= trackURLs.length; i++) {
+    const buttonId = "track" + i;
+    document.getElementById(buttonId).addEventListener("click", function () {
+      updateGuessDistribution(i);
+    });
+  }
+
   // Function to add status message
   function addStatus(message, color) {
     const statusContainer = document.getElementById("statusContainer");
@@ -165,6 +234,42 @@ document.addEventListener("DOMContentLoaded", function () {
     statusElement.innerHTML = message; // Set the HTML content with Unicode character
     statusContainer.appendChild(statusElement);
   }
+
+  // Function to show share buttons
+  function showShareButtons() {
+    const shareContainer = document.getElementById("shareContainer");
+    shareContainer.style.display = "block";
+  }
+
+  // Function to share on Twitter
+  function shareOnTwitter() {
+    const url =
+      "https://twitter.com/intent/tweet?text=Your%20message%20here&url=YourURLHere";
+    window.open(url, "_blank");
+  }
+
+  // Function to share on WhatsApp
+  function shareOnWhatsApp() {
+    const url = "https://api.whatsapp.com/send?text=Your%20message%20here";
+    window.open(url, "_blank");
+  }
+
+  // Function to share on Facebook
+  function shareOnFacebook() {
+    const url = "https://www.facebook.com/sharer/sharer.php?u=YourURLHere";
+    window.open;
+  }
+
+  // Attach click event listeners to share buttons
+  document
+    .getElementById("twitterShareBtn")
+    .addEventListener("click", shareOnTwitter);
+  document
+    .getElementById("whatsappShareBtn")
+    .addEventListener("click", shareOnWhatsApp);
+  document
+    .getElementById("facebookShareBtn")
+    .addEventListener("click", shareOnFacebook);
 
   // Attach click event listener to skip button
   document.getElementById("skipTrack").addEventListener("click", () => {
@@ -186,11 +291,13 @@ document.addEventListener("DOMContentLoaded", function () {
         "#2330AE"
       ); // Add status for out of guesses
       disableButtons(); // Disable buttons after out of guesses
+      resetStreak();
       // Display the correct answer
       const correctAnswerMessage = document.createElement("div");
       correctAnswerMessage.innerHTML = `The correct answer is <span class="text-success">${correctAnswerTrackName}</span>`;
       statusContainer.appendChild(correctAnswerMessage);
       loadTrack(0)();
+      showShareButtons();
     }
   });
 
@@ -233,6 +340,9 @@ document.addEventListener("DOMContentLoaded", function () {
         "#28a745"
       ); // Checkmark icon
       disableButtons(); // Disable buttons after correct answer
+      gameStats.timesWon++;
+      updateStreak();
+      showShareButtons();
     } else {
       revealNextTrack();
       if (skippedCount + wrongAnswersCount < 4) {
@@ -257,12 +367,18 @@ document.addEventListener("DOMContentLoaded", function () {
         const correctAnswerMessage = document.createElement("div");
         correctAnswerMessage.innerHTML = `The correct answer is <span class="text-success">${correctAnswerTrackName}</span>`;
         statusContainer.appendChild(correctAnswerMessage);
+        showShareButtons();
         loadTrack(0)();
+        resetStreak();
       }
     }
+    gameStats.timesPlayed++;
+    updateGameStats();
     // Clear the input field after submission
     document.getElementById("searchInput").value = "";
   });
+  // Initialize game stats
+  updateGameStats();
   // Play the first track when the page loads
   playTrack(0)();
 });
