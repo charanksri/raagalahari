@@ -190,6 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const correctAnswerMessage = document.createElement("div");
       correctAnswerMessage.innerHTML = `The correct answer is <span class="text-success">${correctAnswerTrackName}</span>`;
       statusContainer.appendChild(correctAnswerMessage);
+      loadTrack(0)();
     }
   });
 
@@ -203,6 +204,14 @@ document.addEventListener("DOMContentLoaded", function () {
     return function () {
       audioPlayer.src = trackURLs[index];
       audioPlayer.play();
+    };
+  }
+
+  // Function to play a specific track
+  function loadTrack(index) {
+    return function () {
+      audioPlayer.src = trackURLs[index];
+      audioPlayer.load();
     };
   }
 
@@ -248,6 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const correctAnswerMessage = document.createElement("div");
         correctAnswerMessage.innerHTML = `The correct answer is <span class="text-success">${correctAnswerTrackName}</span>`;
         statusContainer.appendChild(correctAnswerMessage);
+        loadTrack(0)();
       }
     }
     // Clear the input field after submission
