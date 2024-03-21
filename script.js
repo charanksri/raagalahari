@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Attach click event listener to skip button
   document.getElementById("skipTrack").addEventListener("click", () => {
     revealNextTrack();
-    if (skippedCount + wrongAnswersCount < 5) {
+    if (skippedCount + wrongAnswersCount < 4) {
       // Add status for skipped
       addStatus(
         "<span class='bi bi-ban' style='color: white;'></span> Skipped",
@@ -177,6 +177,10 @@ document.addEventListener("DOMContentLoaded", function () {
       );
       skippedCount++;
     } else {
+      addStatus(
+        "<span class='bi bi-ban' style='color: white;'></span> Skipped",
+        "#dc3545"
+      );
       addStatus(
         "<span class='bi bi-dash-circle' style='color: white;'></span> Out of guesses",
         "#2330AE"
@@ -222,7 +226,7 @@ document.addEventListener("DOMContentLoaded", function () {
       disableButtons(); // Disable buttons after correct answer
     } else {
       revealNextTrack();
-      if (skippedCount + wrongAnswersCount < 5) {
+      if (skippedCount + wrongAnswersCount < 4) {
         // Add status for wrong answer
         addStatus(
           `<span class='bi bi-ban' style='color: white;'></span> ${userInput}`,
@@ -231,6 +235,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Display the user-submitted track name
         wrongAnswersCount++;
       } else {
+        addStatus(
+          "<span class='bi bi-ban' style='color: white;'></span> Skipped",
+          "#dc3545"
+        );
         addStatus(
           "<span class='bi bi-dash-circle' style='color: white;'></span> Out of guesses",
           "#2330AE"

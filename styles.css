@@ -56,6 +56,22 @@ input[type="text"] {
   margin-right: auto;
 }
 
+.dark-mode-input {
+  background-color: #535d67; /* Dark background color */
+  color: #ffffff; /* Light text color */
+  border-color: #383d42; /* Border color */
+}
+
+.dark-mode-input::placeholder {
+  color: #ccd3db; /* Placeholder text color */
+}
+
+.dark-mode-input:focus {
+  background-color: #535d67; /* Dark background color */
+  color: #ffffff; /* Light text color */
+  border-color: #383d42; /* Border color */
+}
+
 .sound-player {
   width: 60%; /* Adjust the width as needed */
   margin: 0 auto; /* Center horizontally */
