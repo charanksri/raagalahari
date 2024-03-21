@@ -244,13 +244,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to share on Twitter
   function shareOnTwitter() {
     const url =
-      "https://twitter.com/intent/tweet?text=Your%20message%20here&url=YourURLHere";
+      "https://twitter.com/intent/tweet?text=Check out this music game: raagalahari.netlify.app";
     window.open(url, "_blank");
   }
 
   // Function to share on WhatsApp
   function shareOnWhatsApp() {
-    const url = "https://api.whatsapp.com/send?text=Your%20message%20here";
+    const url =
+      "https://api.whatsapp.com/send?text=Check out this music game: raagalahari.netlify.app";
     window.open(url, "_blank");
   }
 
