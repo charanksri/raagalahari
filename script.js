@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
 
   // Define the correct answer track name
-  const correctAnswerTrackName = "Nee Dookudu";
+  const correctAnswerTrackName = "Gappu Chippu";
 
   // Function to reveal next button and track
   function revealNextTrack() {
