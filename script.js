@@ -120,6 +120,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Global variables to track status messages
   let wrongAnswersCount = 0;
   let skippedCount = 0;
+  let guessesLeft = 5; // Total number of guesses allowed
 
   // Array of track URLs
   const trackURLs = [
@@ -156,73 +157,22 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("skipTrack").disabled = true;
   }
 
-  // Initialize game stats
-  let gameStats = {
-    timesPlayed: 0,
-    timesWon: 0,
-    currentStreak: 0,
-    maxStreak: 0,
-    guessDistribution: {
-      1: 0,
-      2: 0,
-      3: 0,
-      4: 0,
-      5: 0,
-    },
-  };
+  // Function to update guesses left text
+  function updateGuessesLeftText() {
+    const guessesLeftText = document.getElementById("guessesLeftText");
+    guessesLeftText.innerHTML = `You have <strong>${guessesLeft}</strong> out of <strong>5</strong> guesses left`;
+  }
 
-  // Update game stats function
-  function updateGameStats() {
-    document.getElementById("timesPlayed").textContent = gameStats.timesPlayed;
-    document.getElementById("timesWon").textContent = gameStats.timesWon;
-    document.getElementById("winPercentage").textContent =
-      gameStats.timesPlayed === 0
-        ? "0%"
-        : ((gameStats.timesWon / gameStats.timesPlayed) * 100).toFixed(2) + "%";
-    document.getElementById("currentStreak").textContent =
-      gameStats.currentStreak;
-    document.getElementById("maxStreak").textContent = gameStats.maxStreak;
-
-    // Clear previous distribution
-    const guessDistribution = document.getElementById("guessDistribution");
-    guessDistribution.innerHTML = "";
-
-    // Populate new distribution
-    for (let guess in gameStats.guessDistribution) {
-      const listItem = document.createElement("li");
-      listItem.textContent = `Guess ${guess}: ${gameStats.guessDistribution[guess]}`;
-      guessDistribution.appendChild(listItem);
-    }
+  // Function to calculate guess number
+  function calculateGuessNumber() {
+    return 6 - guessesLeft;
   }
 
   // Function to update guess distribution
-  function updateGuessDistribution(guess) {
-    gameStats.guessDistribution[guess]++;
+  function updateGuessDistribution() {
+    const guessNumber = calculateGuessNumber();
+    gameStats.guessDistribution[guessNumber]++;
     updateGameStats();
-  }
-
-  // Function to update streak
-  function updateStreak() {
-    gameStats.currentStreak++;
-    gameStats.maxStreak = Math.max(
-      gameStats.maxStreak,
-      gameStats.currentStreak
-    );
-    updateGameStats();
-  }
-
-  // Function to reset streak
-  function resetStreak() {
-    gameStats.currentStreak = 0;
-    updateGameStats();
-  }
-
-  // Attach click event listeners to each track button
-  for (let i = 1; i <= trackURLs.length; i++) {
-    const buttonId = "track" + i;
-    document.getElementById(buttonId).addEventListener("click", function () {
-      updateGuessDistribution(i);
-    });
   }
 
   // Function to add status message
@@ -243,31 +193,51 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to share on Twitter
   function shareOnTwitter() {
-    const message = "#RaagaLahari Check out this music game: ";
+    const guessNumber = calculateGuessNumber();
+    const message = generateGuessMessage(guessNumber);
     const url =
-      "https://twitter.com/intent/tweet?text=" +
-      encodeURIComponent(message) +
-      "raagalahari.netlify.app";
+      "https://twitter.com/intent/tweet?text=" + encodeURIComponent(message);
     window.open(url, "_blank");
   }
 
   // Function to share on WhatsApp
   function shareOnWhatsApp() {
-    const message = "#RaagaLahari Check out this music game: ";
+    const guessNumber = calculateGuessNumber();
+    const message = generateGuessMessage(guessNumber);
     const url =
-      "https://api.whatsapp.com/send?text=" +
-      encodeURIComponent(message) +
-      "raagalahari.netlify.app";
+      "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
     window.open(url, "_blank");
   }
 
   // Function to share on Facebook
   function shareOnFacebook() {
-    const message = "#RaagaLahari Check out this music game: ";
+    const guessNumber = calculateGuessNumber();
+    const message = generateGuessMessage(guessNumber);
     const url =
       "https://www.facebook.com/sharer/sharer.php?u=raagalahari.netlify.app&quote=" +
       encodeURIComponent(message);
     window.open(url);
+  }
+
+  // Function to generate the guess message
+  function generateGuessMessage(guessNumber) {
+    let message = "Raagalahari: ";
+    if (guessNumber > 5 || guessNumber === 0) {
+      for (let i = 0; i < 5; i++) {
+        message += "🟥"; // Red square for all guesses if out of guesses or 0 guesses left
+      }
+    } else {
+      for (let i = 1; i <= 5; i++) {
+        if (i < guessNumber) {
+          message += "🟥"; // Red square for incorrect guesses before the correct one
+        } else if (i === guessNumber) {
+          message += "🟩"; // Green square for the correct guess
+        } else {
+          message += "⬛"; // Black square for guesses after the correct one
+        }
+      }
+    }
+    return message + "\nCheck out this music game: raagalahari.netlify.app";
   }
 
   // Attach click event listeners to share buttons
@@ -291,6 +261,8 @@ document.addEventListener("DOMContentLoaded", function () {
         "#dc3545"
       );
       skippedCount++;
+      guessesLeft--;
+      updateGuessesLeftText();
     } else {
       addStatus(
         "<span class='bi bi-ban' style='color: white;'></span> Skipped",
@@ -301,13 +273,16 @@ document.addEventListener("DOMContentLoaded", function () {
         "#2330AE"
       ); // Add status for out of guesses
       disableButtons(); // Disable buttons after out of guesses
-      resetStreak();
+      guessesLeft--;
       // Display the correct answer
       const correctAnswerMessage = document.createElement("div");
       correctAnswerMessage.innerHTML = `The correct answer is <span class="text-success">${correctAnswerTrackName}</span>`;
       statusContainer.appendChild(correctAnswerMessage);
       loadTrack(0)();
       showShareButtons();
+      // Remove "Guesses left" message
+      const guessesLeftText = document.getElementById("guessesLeftText");
+      guessesLeftText.textContent = "";
     }
   });
 
@@ -355,8 +330,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "#28a745"
       ); // Checkmark icon
       disableButtons(); // Disable buttons after correct answer
-      gameStats.timesWon++;
-      updateStreak();
       showShareButtons();
     } else {
       revealNextTrack();
@@ -368,6 +341,8 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         // Display the user-submitted track name
         wrongAnswersCount++;
+        guessesLeft--;
+        updateGuessesLeftText();
       } else {
         addStatus(
           "<span class='bi bi-ban' style='color: white;'></span> Skipped",
@@ -378,22 +353,21 @@ document.addEventListener("DOMContentLoaded", function () {
           "#2330AE"
         ); // Add status for out of guesses
         disableButtons(); // Disable buttons after out of guesses
+        guessesLeft--;
         // Display the correct answer
         const correctAnswerMessage = document.createElement("div");
         correctAnswerMessage.innerHTML = `The correct answer is <span class="text-success">${correctAnswerTrackName}</span>`;
         statusContainer.appendChild(correctAnswerMessage);
         showShareButtons();
         loadTrack(0)();
-        resetStreak();
+        // Remove "Guesses left" message
+        const guessesLeftText = document.getElementById("guessesLeftText");
+        guessesLeftText.textContent = "";
       }
     }
-    gameStats.timesPlayed++;
-    updateGameStats();
     // Clear the input field after submission
     document.getElementById("searchInput").value = "";
   });
-  // Initialize game stats
-  updateGameStats();
   // Play the first track when the page loads
   playTrack(0)();
 });
