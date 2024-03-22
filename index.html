@@ -105,6 +105,9 @@
               All rights go to the rightful owners - no copyright infringement
               intended.
             </p>
+            <p style="font-size: 14px; color: #777">
+              Autofill Suggestions are powered by Spotify API.
+            </p>
           </div>
           <div class="modal-footer">
             <button
@@ -213,22 +216,30 @@
         </button>
       </div>
 
-      <div class="search-box mt-4">
-        <input
-          type="text"
-          id="searchInput"
-          class="form-control dark-mode-input"
-          placeholder="Enter track name..."
-        />
-        <div class="dropdown-container">
-          <ul id="autofillSuggestions" class="autofill-dropdown"></ul>
+      <div class="d-flex justify-content-center align-items-center mt-4">
+        <div class="search-box mr-1" style="height: 38px">
+          <!-- Removed margin-right from search box -->
+          <input
+            type="text"
+            id="searchInput"
+            class="form-control dark-mode-input"
+            placeholder="Enter track name..."
+            style="margin-right: 0"
+          />
+          <div class="dropdown-container mr-1">
+            <ul id="autofillSuggestions" class="autofill-dropdown"></ul>
+          </div>
         </div>
-      </div>
-      <div class="text-center">
-        <button id="submitButton" type="button" class="btn btn-primary mt-3">
+        <button
+          id="submitButton"
+          type="button"
+          class="btn btn-primary"
+          style="margin-left: 0"
+        >
           Submit
         </button>
       </div>
+
       <div
         class="status-container"
         id="statusContainer"

@@ -243,22 +243,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Function to share on Twitter
   function shareOnTwitter() {
+    const message = "#RaagaLahari Check out this music game: ";
     const url =
-      "https://twitter.com/intent/tweet?text=Check out this music game: raagalahari.netlify.app";
+      "https://twitter.com/intent/tweet?text=" +
+      encodeURIComponent(message) +
+      "raagalahari.netlify.app";
     window.open(url, "_blank");
   }
 
   // Function to share on WhatsApp
   function shareOnWhatsApp() {
+    const message = "#RaagaLahari Check out this music game: ";
     const url =
-      "https://api.whatsapp.com/send?text=Check out this music game: raagalahari.netlify.app";
+      "https://api.whatsapp.com/send?text=" +
+      encodeURIComponent(message) +
+      "raagalahari.netlify.app";
     window.open(url, "_blank");
   }
 
   // Function to share on Facebook
   function shareOnFacebook() {
-    const url = "https://www.facebook.com/sharer/sharer.php?u=YourURLHere";
-    window.open;
+    const message = "#RaagaLahari Check out this music game: ";
+    const url =
+      "https://www.facebook.com/sharer/sharer.php?u=raagalahari.netlify.app&quote=" +
+      encodeURIComponent(message);
+    window.open(url);
   }
 
   // Attach click event listeners to share buttons
@@ -334,6 +343,11 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to handle submit button click
   document.getElementById("submitButton").addEventListener("click", () => {
     const userInput = document.getElementById("searchInput").value.trim();
+    if (!userInput) {
+      // Check if the input is empty
+      alert("Please enter a track name before submitting.");
+      return; // Exit the function if input is empty
+    }
     if (userInput === correctAnswerTrackName) {
       revealAllTracks(); // If user input matches the correct answer, reveal all tracks
       addStatus(
