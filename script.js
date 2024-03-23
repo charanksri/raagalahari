@@ -89,6 +89,42 @@ document.getElementById("searchInput").addEventListener("input", (event) => {
   }
 });
 
+function updateStats() {
+  // Retrieve saved statistics from local storage
+  const savedStats = JSON.parse(localStorage.getItem("gameStats")) || {};
+
+  // Update HTML elements with saved statistics
+  document.getElementById("timesPlayed").textContent =
+    savedStats.timesPlayed || 0;
+  document.getElementById("timesWon").textContent = savedStats.timesWon || 0;
+
+  // Calculate and display win percentage
+  const timesPlayed = savedStats.timesPlayed || 0;
+  const timesWon = savedStats.timesWon || 0;
+  const winPercentage =
+    timesPlayed === 0 ? 0 : ((timesWon / timesPlayed) * 100).toFixed(1);
+  document.getElementById("winPercentage").textContent = winPercentage + "%";
+
+  // Display guess distribution
+  const guessDistribution = document.getElementById("guessDistribution");
+  guessDistribution.innerHTML = ""; // Clear previous contents
+  const guessList = document.createElement("ul"); // Create <ul> element
+  for (const [guess, count] of Object.entries(
+    savedStats.guessDistribution || {}
+  )) {
+    const listItem = document.createElement("li"); // Create <li> element
+    listItem.textContent = `Guess ${guess}: ${count}`;
+    guessList.appendChild(listItem); // Append <li> to <ul>
+  }
+  guessDistribution.appendChild(guessList); // Append <ul> to guessDistribution container
+  document.getElementById("currentStreak").textContent =
+    savedStats.currentStreak || 0;
+  document.getElementById("maxStreak").textContent = savedStats.maxStreak || 0;
+}
+
+// Call the updateStats function initially
+updateStats();
+
 // Function to fetch track details by track ID
 async function fetchTrackDetails(trackId, accessToken) {
   try {
@@ -122,6 +158,21 @@ document.addEventListener("DOMContentLoaded", function () {
   let skippedCount = 0;
   let guessesLeft = 5; // Total number of guesses allowed
 
+  // Load game stats from local storage or initialize if not available
+  let gameStats = JSON.parse(localStorage.getItem("gameStats")) || {
+    timesPlayed: 0,
+    timesWon: 0,
+    currentStreak: 0,
+    maxStreak: 0,
+    guessDistribution: {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+    },
+  };
+
   // Array of track URLs
   const trackURLs = [
     "https://github.com/charanksri/raagalahari/raw/main/hint1.mp3",
@@ -133,6 +184,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Define the correct answer track name
   const correctAnswerTrackName = "Gappu Chippu";
+
+  // Function to handle successful game completion
+  function handleGameCompletion() {
+    // Calculate the guess number
+    const guessNumber = calculateGuessNumber();
+
+    // Update game statistics
+    let savedStats = JSON.parse(localStorage.getItem("gameStats")) || {};
+    savedStats.timesPlayed = (savedStats.timesPlayed || 0) + 1;
+    savedStats.timesWon = (savedStats.timesWon || 0) + 1;
+    savedStats.currentStreak = (savedStats.currentStreak || 0) + 1;
+    savedStats.maxStreak = Math.max(
+      savedStats.maxStreak || 0,
+      savedStats.currentStreak || 0
+    );
+
+    // Update guess distribution
+    savedStats.guessDistribution = savedStats.guessDistribution || {};
+    savedStats.guessDistribution[guessNumber] =
+      (savedStats.guessDistribution[guessNumber] || 0) + 1;
+
+    // Store the updated statistics
+    localStorage.setItem("gameStats", JSON.stringify(savedStats));
+
+    // Update statistics dynamically
+    updateStats();
+  }
+
+  // Function to handle unsuccessful game completion
+  function handleUnsuccessfulGame() {
+    // Update game statistics
+    let savedStats = JSON.parse(localStorage.getItem("gameStats")) || {};
+    savedStats.timesPlayed = (savedStats.timesPlayed || 0) + 1;
+    savedStats.currentStreak = 0; // Reset current streak on unsuccessful game
+    localStorage.setItem("gameStats", JSON.stringify(savedStats));
+
+    // Update statistics dynamically
+    updateStats();
+  }
 
   // Function to reveal next button and track
   function revealNextTrack() {
@@ -166,13 +256,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // Function to calculate guess number
   function calculateGuessNumber() {
     return 6 - guessesLeft;
-  }
-
-  // Function to update guess distribution
-  function updateGuessDistribution() {
-    const guessNumber = calculateGuessNumber();
-    gameStats.guessDistribution[guessNumber]++;
-    updateGameStats();
   }
 
   // Function to add status message
@@ -283,6 +366,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Remove "Guesses left" message
       const guessesLeftText = document.getElementById("guessesLeftText");
       guessesLeftText.textContent = "";
+      handleUnsuccessfulGame(); // Call handleUnsuccessfulGame when the user loses
     }
   });
 
@@ -331,6 +415,7 @@ document.addEventListener("DOMContentLoaded", function () {
       ); // Checkmark icon
       disableButtons(); // Disable buttons after correct answer
       showShareButtons();
+      handleGameCompletion();
     } else {
       revealNextTrack();
       if (skippedCount + wrongAnswersCount < 4) {
@@ -363,6 +448,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Remove "Guesses left" message
         const guessesLeftText = document.getElementById("guessesLeftText");
         guessesLeftText.textContent = "";
+        handleUnsuccessfulGame(); // Call handleUnsuccessfulGame when the user loses
       }
     }
     // Clear the input field after submission

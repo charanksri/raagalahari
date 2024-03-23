@@ -195,3 +195,15 @@ img {
   background-color: #007bff; /* Change background color to blue or any desired color */
   color: #fff; /* Change text color to white or any desired color */
 }
+
+#guessDistribution {
+  display: flex;
+  align-items: center;
+}
+
+.bar {
+  width: 20px; /* Adjust the width of the bars as needed */
+  height: 20px;
+  margin-right: 5px;
+  background-color: #007bff; /* Example color */
+}
