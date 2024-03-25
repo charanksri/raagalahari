@@ -151,12 +151,120 @@ async function fetchTrackDetails(trackId, accessToken) {
 
 document.addEventListener("DOMContentLoaded", function () {
   const audioPlayer = document.getElementById("audioPlayer");
-  const trackButtons = document.querySelectorAll(".button-container button");
+  let trackButtons; // Define trackButtons variable
   let currentIndex = 0;
   // Global variables to track status messages
   let wrongAnswersCount = 0;
   let skippedCount = 0;
   let guessesLeft = 5; // Total number of guesses allowed
+  let gameCondition = 0;
+  loadStatusContainerState(); // Call the function to load status container state
+  loadShareContainerState();
+  loadButtonContainerState();
+
+  // Function to initialize trackButtons and currentIndex
+  function initialize() {
+    trackButtons = document.querySelectorAll(".button-container button");
+    // Retrieve currentIndex from localStorage if available
+    const savedGameState = JSON.parse(localStorage.getItem("gameState"));
+    if (savedGameState) {
+      currentIndex = savedGameState.currentIndex || 0;
+    }
+  }
+
+  initialize(); // Call initialize function when DOM content is loaded
+
+  // Check for saved game state in localStorage
+  const savedGameState = JSON.parse(localStorage.getItem("gameState"));
+  if (savedGameState) {
+    currentIndex = savedGameState.currentIndex;
+    wrongAnswersCount = savedGameState.wrongAnswersCount;
+    skippedCount = savedGameState.skippedCount;
+    guessesLeft = savedGameState.guessesLeft;
+    // Check game status and take action accordingly
+    if (savedGameState.gameStatus === "game_completed") {
+      revealAllTracks();
+      disableButtons();
+      // Remove "Guesses left" message
+      const guessesLeftText = document.getElementById("guessesLeftText");
+      guessesLeftText.textContent = "";
+    } else {
+      updateGuessesLeftText();
+    }
+  }
+
+  function updateGameState() {
+    // Save game state to localStorage
+    const gameState = {
+      currentIndex: currentIndex,
+      wrongAnswersCount: wrongAnswersCount,
+      skippedCount: skippedCount,
+      guessesLeft: guessesLeft,
+      gameStatus: getGameStatus(), // Update game status
+      trackButtonsLength: trackButtons.length, // Include trackButtons.length
+    };
+    localStorage.setItem("gameState", JSON.stringify(gameState));
+  }
+
+  // Function to save the state of the button container
+  function saveButtonContainerState() {
+    const buttonContainer = document.querySelector(".button-container");
+    const buttonContainerHTML = buttonContainer.innerHTML;
+    localStorage.setItem("buttonContainerState", buttonContainerHTML);
+  }
+
+  // Function to load the state of the button container
+  function loadButtonContainerState() {
+    const buttonContainer = document.querySelector(".button-container");
+    const savedState = localStorage.getItem("buttonContainerState");
+    if (savedState) {
+      buttonContainer.innerHTML = savedState;
+    }
+  }
+
+  // Function to save the state of the status container to local storage
+  function saveStatusContainerState() {
+    // Retrieve the status container element
+    const statusContainer = document.getElementById("statusContainer");
+    // Serialize the state (in this case, we'll save the HTML content of the status container)
+    const serializedState = statusContainer.innerHTML;
+    // Save the serialized state to local storage
+    localStorage.setItem("statusContainerState", serializedState);
+  }
+
+  // Function to load the status container state from local storage
+  function loadStatusContainerState() {
+    const savedStatusContainerState = localStorage.getItem(
+      "statusContainerState"
+    );
+    if (savedStatusContainerState) {
+      // Restore the status container state from the saved state
+      const statusContainer = document.getElementById("statusContainer");
+      statusContainer.innerHTML = savedStatusContainerState;
+    }
+  }
+
+  // Function to save the state of the share container
+  function saveShareContainerState() {
+    const shareContainer = document.getElementById("shareContainer");
+    const isDisplayed =
+      window.getComputedStyle(shareContainer).display !== "none";
+    localStorage.setItem("shareContainerState", JSON.stringify(isDisplayed));
+  }
+
+  // Function to load the state of the share container
+  function loadShareContainerState() {
+    const shareContainer = document.getElementById("shareContainer");
+    const savedState = localStorage.getItem("shareContainerState");
+    if (savedState) {
+      const isDisplayed = JSON.parse(savedState);
+      if (isDisplayed) {
+        shareContainer.style.display = "block";
+      } else {
+        shareContainer.style.display = "none";
+      }
+    }
+  }
 
   // Load game stats from local storage or initialize if not available
   let gameStats = JSON.parse(localStorage.getItem("gameStats")) || {
@@ -184,6 +292,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Define the correct answer track name
   const correctAnswerTrackName = "Gappu Chippu";
+  // Play the first track when the page loads
+  audioPlayer.src = trackURLs[currentIndex];
+  audioPlayer.play(); // Start playing the first track
 
   // Function to handle successful game completion
   function handleGameCompletion() {
@@ -224,13 +335,17 @@ document.addEventListener("DOMContentLoaded", function () {
     updateStats();
   }
 
-  // Function to reveal next button and track
   function revealNextTrack() {
-    if (currentIndex < trackButtons.length) {
-      trackButtons[currentIndex].classList.remove("d-none"); // Revealing next button
-      audioPlayer.src = trackURLs[currentIndex]; // Setting the next track
+    if (currentIndex < trackButtons.length - 1) {
+      trackButtons[currentIndex + 1].classList.remove("d-none"); // Revealing next button
+      console.log("Next button revealed:", trackButtons[currentIndex + 1].id); // Log the ID of the revealed button
+      audioPlayer.src = trackURLs[currentIndex + 1]; // Setting the next track
       audioPlayer.play(); // Start playing the track
       currentIndex++; // Increment index for the next track
+      updateGameState(); // Save game state after track change
+      console.log("Current Index:", currentIndex); // Log current index for debugging
+    } else {
+      console.log("All tracks revealed."); // Log if all tracks are revealed
     }
   }
 
@@ -337,6 +452,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Attach click event listener to skip button
   document.getElementById("skipTrack").addEventListener("click", () => {
     revealNextTrack();
+    saveButtonContainerState();
     if (skippedCount + wrongAnswersCount < 4) {
       // Add status for skipped
       addStatus(
@@ -346,6 +462,8 @@ document.addEventListener("DOMContentLoaded", function () {
       skippedCount++;
       guessesLeft--;
       updateGuessesLeftText();
+      updateGameState(); // Save game state after skip
+      saveStatusContainerState();
     } else {
       addStatus(
         "<span class='bi bi-ban' style='color: white;'></span> Skipped",
@@ -356,6 +474,8 @@ document.addEventListener("DOMContentLoaded", function () {
         "#2330AE"
       ); // Add status for out of guesses
       disableButtons(); // Disable buttons after out of guesses
+      saveStatusContainerState();
+      skippedCount++;
       guessesLeft--;
       // Display the correct answer
       const correctAnswerMessage = document.createElement("div");
@@ -363,17 +483,14 @@ document.addEventListener("DOMContentLoaded", function () {
       statusContainer.appendChild(correctAnswerMessage);
       loadTrack(0)();
       showShareButtons();
+      saveShareContainerState();
       // Remove "Guesses left" message
       const guessesLeftText = document.getElementById("guessesLeftText");
       guessesLeftText.textContent = "";
       handleUnsuccessfulGame(); // Call handleUnsuccessfulGame when the user loses
+      updateGameState(); // Save game state after skip
     }
   });
-
-  // Play the first track when the page loads
-  audioPlayer.src = trackURLs[currentIndex];
-  audioPlayer.play(); // Start playing the first track
-  currentIndex++; // Move to the next track
 
   // Function to play a specific track
   function playTrack(index) {
@@ -415,9 +532,17 @@ document.addEventListener("DOMContentLoaded", function () {
       ); // Checkmark icon
       disableButtons(); // Disable buttons after correct answer
       showShareButtons();
+      saveShareContainerState();
       handleGameCompletion();
+      gameCondition++;
+      // Remove "Guesses left" message
+      const guessesLeftText = document.getElementById("guessesLeftText");
+      guessesLeftText.textContent = "";
+      updateGameState(); // Save game state after skip
+      saveStatusContainerState();
     } else {
       revealNextTrack();
+      saveButtonContainerState();
       if (skippedCount + wrongAnswersCount < 4) {
         // Add status for wrong answer
         addStatus(
@@ -428,6 +553,8 @@ document.addEventListener("DOMContentLoaded", function () {
         wrongAnswersCount++;
         guessesLeft--;
         updateGuessesLeftText();
+        updateGameState(); // Save game state after skip
+        saveStatusContainerState();
       } else {
         addStatus(
           "<span class='bi bi-ban' style='color: white;'></span> Skipped",
@@ -438,22 +565,34 @@ document.addEventListener("DOMContentLoaded", function () {
           "#2330AE"
         ); // Add status for out of guesses
         disableButtons(); // Disable buttons after out of guesses
+        wrongAnswersCount++;
         guessesLeft--;
         // Display the correct answer
         const correctAnswerMessage = document.createElement("div");
         correctAnswerMessage.innerHTML = `The correct answer is <span class="text-success">${correctAnswerTrackName}</span>`;
         statusContainer.appendChild(correctAnswerMessage);
         showShareButtons();
+        saveShareContainerState();
+        updateGameState(); // Save game state after skip
         loadTrack(0)();
         // Remove "Guesses left" message
         const guessesLeftText = document.getElementById("guessesLeftText");
         guessesLeftText.textContent = "";
         handleUnsuccessfulGame(); // Call handleUnsuccessfulGame when the user loses
+        saveStatusContainerState();
       }
     }
     // Clear the input field after submission
     document.getElementById("searchInput").value = "";
   });
+  // Function to get the game status
+  function getGameStatus() {
+    if (wrongAnswersCount + skippedCount > 4 || gameCondition > 0) {
+      return "game_completed";
+    } else {
+      return "in_progress";
+    }
+  }
   // Play the first track when the page loads
   playTrack(0)();
 });
