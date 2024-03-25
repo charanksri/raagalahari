@@ -1,5 +1,3 @@
-import dotenv from "dotenv";
-
 // Load environment variables from .env file during the build process
 dotenv.config();
 // Function to authenticate and get access token
