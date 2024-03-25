@@ -1,5 +1,3 @@
-// Load environment variables from .env file during the build process
-dotenv.config();
 // Function to authenticate and get access token
 async function authenticate() {
   const clientId = process.env.SPOTIFY_CLIENT_ID;
