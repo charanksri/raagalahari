@@ -1,7 +1,7 @@
 // Function to authenticate and get access token
 async function authenticate() {
-  const clientId = process.env.CLIENT_ID;
-  const clientSecret = process.env.CLIENT_SECRET;
+const clientId = "<YOUR_SPOTIFY_CLIENT_ID>";
+const clientSecret = "<YOUR_SPOTIFY_CLIENT_SECRET>";
 
   try {
     const response = await fetch("https://accounts.spotify.com/api/token", {
