@@ -1,4 +1,7 @@
-require("dotenv").config(); // Include this line at the top of your file
+import dotenv from "dotenv";
+
+// Load environment variables from .env file during the build process
+dotenv.config();
 // Function to authenticate and get access token
 async function authenticate() {
   const clientId = process.env.SPOTIFY_CLIENT_ID;
