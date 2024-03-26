@@ -1,16 +1,7 @@
-// Function to authenticate and get access token
 async function authenticate() {
-  const clientId = SPOTIFY_CLIENT_ID;
-  const clientSecret = SPOTIFY_CLIENT_SECRET;
-
   try {
-    const response = await fetch("https://accounts.spotify.com/api/token", {
+    const response = await fetch("/.netlify/functions/authenticate", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic " + btoa(clientId + ":" + clientSecret),
-      },
-      body: "grant_type=client_credentials",
     });
 
     if (!response.ok) {
@@ -21,7 +12,7 @@ async function authenticate() {
     return data.access_token;
   } catch (error) {
     console.error("Authentication error:", error);
-    throw error; // Rethrow error to handle it outside
+    throw error;
   }
 }
 
