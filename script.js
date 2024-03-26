@@ -1,8 +1,8 @@
-// Load environment variables from window object
-const clientId = window.CLIENT_ID;
-const clientSecret = window.CLIENT_SECRET;
-
+// Function to authenticate and get access token
 async function authenticate() {
+  const clientId = "737cd1dc8e6a4dee9c73becd0e05eb47";
+  const clientSecret = "ea1fb28132544f7fae62b4fc13368eb7";
+
   try {
     const response = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
@@ -24,16 +24,6 @@ async function authenticate() {
     throw error; // Rethrow error to handle it outside
   }
 }
-
-// Example usage
-authenticate()
-  .then((access_token) => {
-    console.log("Access token:", access_token);
-  })
-  .catch((error) => {
-    console.error("Failed to authenticate:", error);
-  });
-
 // Function to search tracks from Spotify API and populate autofill suggestions
 async function populateAutofill(query) {
   const accessToken = await authenticate(); // Get the access token
