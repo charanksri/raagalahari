@@ -1,16 +1,11 @@
-// Function to authenticate and get access token
 async function authenticate() {
-  const clientId = "737cd1dc8e6a4dee9c73becd0e05eb47";
-  const clientSecret = "ea1fb28132544f7fae62b4fc13368eb7";
-
   try {
-    const response = await fetch("https://accounts.spotify.com/api/token", {
+    const response = await fetch("/.netlify/functions/authenticate", {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic " + btoa(clientId + ":" + clientSecret),
+        "Content-Type": "application/json",
       },
-      body: "grant_type=client_credentials",
+      body: JSON.stringify({}),
     });
 
     if (!response.ok) {
@@ -21,9 +16,10 @@ async function authenticate() {
     return data.access_token;
   } catch (error) {
     console.error("Authentication error:", error);
-    throw error; // Rethrow error to handle it outside
+    throw error;
   }
 }
+
 // Function to search tracks from Spotify API and populate autofill suggestions
 async function populateAutofill(query) {
   const accessToken = await authenticate(); // Get the access token
