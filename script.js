@@ -1,7 +1,17 @@
+require("dotenv").config(); // This loads variables from .env file into process.env
+
 async function authenticate() {
+  const clientId = process.env.CLIENT_ID;
+  const clientSecret = process.env.CLIENT_SECRET;
+
   try {
-    const response = await fetch("/.netlify/functions/authenticate", {
+    const response = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: "Basic " + btoa(clientId + ":" + clientSecret),
+      },
+      body: "grant_type=client_credentials",
     });
 
     if (!response.ok) {
@@ -12,9 +22,18 @@ async function authenticate() {
     return data.access_token;
   } catch (error) {
     console.error("Authentication error:", error);
-    throw error;
+    throw error; // Rethrow error to handle it outside
   }
 }
+
+// Example usage
+authenticate()
+  .then((access_token) => {
+    console.log("Access token:", access_token);
+  })
+  .catch((error) => {
+    console.error("Failed to authenticate:", error);
+  });
 
 // Function to search tracks from Spotify API and populate autofill suggestions
 async function populateAutofill(query) {
