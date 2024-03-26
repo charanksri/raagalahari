@@ -1,14 +1,18 @@
-// Function to authenticate and get access token
+require("dotenv").config();
+const fetch = require("node-fetch");
+
 async function authenticate() {
-  const clientId = "737cd1dc8e6a4dee9c73becd0e05eb47";
-  const clientSecret = "ea1fb28132544f7fae62b4fc13368eb7";
+  const clientId = process.env.SPOTIFY_CLIENT_ID;
+  const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
   try {
     const response = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: "Basic " + btoa(clientId + ":" + clientSecret),
+        Authorization: `Basic ${Buffer.from(
+          `${clientId}:${clientSecret}`
+        ).toString("base64")}`,
       },
       body: "grant_type=client_credentials",
     });
@@ -24,6 +28,7 @@ async function authenticate() {
     throw error; // Rethrow error to handle it outside
   }
 }
+
 // Function to search tracks from Spotify API and populate autofill suggestions
 async function populateAutofill(query) {
   const accessToken = await authenticate(); // Get the access token
