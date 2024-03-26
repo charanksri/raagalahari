@@ -623,13 +623,14 @@ document.addEventListener("DOMContentLoaded", function () {
     statusContainer.innerHTML = "";
   }
 
-  // Function to check current time and trigger game reset if necessary
   function checkTimeAndResetGame() {
+    console.log("Checking time...");
     const now = new Date();
     const minutes = now.getMinutes();
 
     // Check if the time is a multiple of 5 minutes (e.g., 6:45, 6:50, 6:55, ...)
     if (minutes % 5 === 0) {
+      console.log("Resetting game...");
       resetGame(); // Reset the game
     }
   }
