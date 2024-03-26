@@ -590,4 +590,50 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   // Play the first track when the page loads
   playTrack(0)();
+
+  // Function to reset the game with new track URLs and correct track answer name
+  function resetGame() {
+    // Define new track URLs and correct track answer name
+    const newTrackURLs = [
+      "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
+      "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
+      "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
+      "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
+      "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
+    ];
+    const newCorrectAnswerTrackName = "Nee Dookudu";
+
+    // Update global variables and game state
+    trackURLs = newTrackURLs;
+    correctAnswerTrackName = newCorrectAnswerTrackName;
+    currentIndex = 0;
+    wrongAnswersCount = 0;
+    skippedCount = 0;
+    guessesLeft = 5;
+    gameCondition = 0;
+
+    // Clear local storage for game state
+    localStorage.removeItem("gameState");
+
+    // Reset game UI
+    initialize();
+    revealNextTrack();
+    updateGuessesLeftText();
+    const statusContainer = document.getElementById("statusContainer");
+    statusContainer.innerHTML = "";
+  }
+
+  // Function to check current time and trigger game reset if necessary
+  function checkTimeAndResetGame() {
+    const now = new Date();
+    const minutes = now.getMinutes();
+
+    // Check if the time is a multiple of 5 minutes (e.g., 6:45, 6:50, 6:55, ...)
+    if (minutes % 5 === 0) {
+      resetGame(); // Reset the game
+    }
+  }
+
+  // Call checkTimeAndResetGame every minute to check if game reset is needed
+  setInterval(checkTimeAndResetGame, 60000); // Check every minute
 });
