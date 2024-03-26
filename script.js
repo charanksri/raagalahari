@@ -1,9 +1,8 @@
-require("dotenv").config(); // This loads variables from .env file into process.env
+// Load environment variables from window object
+const clientId = window.CLIENT_ID;
+const clientSecret = window.CLIENT_SECRET;
 
 async function authenticate() {
-  const clientId = process.env.CLIENT_ID;
-  const clientSecret = process.env.CLIENT_SECRET;
-
   try {
     const response = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
