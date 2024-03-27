@@ -144,7 +144,7 @@ async function fetchTrackDetails(trackId, accessToken) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
   const audioPlayer = document.getElementById("audioPlayer");
   let trackButtons; // Define trackButtons variable
   let currentIndex = 0;
@@ -187,6 +187,67 @@ document.addEventListener("DOMContentLoaded", function () {
       updateGuessesLeftText();
     }
   }
+
+  // Function to fetch track data from JSON file
+  async function fetchTrackData() {
+    try {
+      const response = await fetch(
+        "https://github.com/charanksri/raagalahari/blob/ae84b9ee1fab94eff38bf2670a9b17ceff35ef45/data.json"
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching track data:", error);
+      return null;
+    }
+  }
+
+  // Function to update track data
+  async function updateTrackData() {
+    const trackData = await fetchTrackData();
+    if (trackData) {
+      const currentDate = new Date().toLocaleDateString("en-US", {
+        timeZone: "Asia/Kolkata",
+      });
+      const todayData = trackData[currentDate];
+      if (todayData) {
+        audioPlayer.src = todayData.trackURLs[currentIndex];
+        audioPlayer.play();
+        return todayData;
+      } else {
+        // If no data found for today, use default data
+        return trackData["2024-03-26"];
+      }
+    }
+  }
+
+  // Update track data
+  const currentTrackData = await updateTrackData();
+
+  // Define the correct answer track name
+  const correctAnswerTrackName = currentTrackData.correctAnswerTrackName;
+
+  // Array of track URLs
+  const trackURLs = currentTrackData.trackURLs;
+
+  // Clear specific items in local storage when the date changes
+  function clearLocalStorageOnDateChange() {
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      timeZone: "Asia/Kolkata",
+    });
+    const lastDate = localStorage.getItem("lastDate");
+
+    if (lastDate !== currentDate) {
+      localStorage.removeItem("gameState");
+      localStorage.removeItem("buttonContainerState");
+      localStorage.removeItem("statusContainerState");
+      localStorage.removeItem("shareContainerState");
+      localStorage.setItem("lastDate", currentDate);
+    }
+  }
+
+  // Call function to clear local storage on date change
+  clearLocalStorageOnDateChange();
 
   function updateGameState() {
     // Save game state to localStorage
@@ -276,17 +337,6 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   };
 
-  // Array of track URLs
-  const trackURLs = [
-    "https://github.com/charanksri/raagalahari/raw/main/hint1.mp3",
-    "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint2.mp3",
-    "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint3.mp3",
-    "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint4.mp3",
-    "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
-  ];
-
-  // Define the correct answer track name
-  const correctAnswerTrackName = "Gappu Chippu";
   // Play the first track when the page loads
   audioPlayer.src = trackURLs[currentIndex];
   audioPlayer.play(); // Start playing the first track
@@ -590,51 +640,4 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   // Play the first track when the page loads
   playTrack(0)();
-
-  // Function to reset the game with new track URLs and correct track answer name
-  function resetGame() {
-    // Define new track URLs and correct track answer name
-    const newTrackURLs = [
-      "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
-      "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
-      "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
-      "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
-      "https://raw.githubusercontent.com/charanksri/raagalahari/main/hint5.mp3",
-    ];
-    const newCorrectAnswerTrackName = "Nee Dookudu";
-
-    // Update global variables and game state
-    trackURLs = newTrackURLs;
-    correctAnswerTrackName = newCorrectAnswerTrackName;
-    currentIndex = 0;
-    wrongAnswersCount = 0;
-    skippedCount = 0;
-    guessesLeft = 5;
-    gameCondition = 0;
-
-    // Clear local storage for game state
-    localStorage.removeItem("gameState");
-
-    // Reset game UI
-    initialize();
-    revealNextTrack();
-    updateGuessesLeftText();
-    const statusContainer = document.getElementById("statusContainer");
-    statusContainer.innerHTML = "";
-  }
-
-  function checkTimeAndResetGame() {
-    console.log("Checking time...");
-    const now = new Date();
-    const minutes = now.getMinutes();
-
-    // Check if the time is a multiple of 5 minutes (e.g., 6:45, 6:50, 6:55, ...)
-    if (minutes % 5 === 0) {
-      console.log("Resetting game...");
-      resetGame(); // Reset the game
-    }
-  }
-
-  // Call checkTimeAndResetGame every minute to check if game reset is needed
-  setInterval(checkTimeAndResetGame, 60000); // Check every minute
 });
