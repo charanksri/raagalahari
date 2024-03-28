@@ -1,4 +1,8 @@
 [build]
 functions = "functions/"
-[functions]
-snode_bundler = "esbuild"
+
+[functions.snode_bundler]
+external_node_modules = [
+  "module-one",
+  "module-two"
+]
