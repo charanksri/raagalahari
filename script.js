@@ -189,22 +189,20 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   // Function to fetch track data from JSON file
-  async function fetchTrackData() {
+  async function fetchDataFromNetlifyFunction() {
     try {
-      const response = await fetch(
-        "https://github.com/charanksri/raagalahari/blob/ae84b9ee1fab94eff38bf2670a9b17ceff35ef45/data.json"
-      );
+      const response = await fetch("/.netlify/functions/fetchData");
       const data = await response.json();
-      return data;
+      console.log("Fetched data:", data);
+      // Process the fetched data here
     } catch (error) {
-      console.error("Error fetching track data:", error);
-      return null;
+      console.error("Error fetching data:", error);
     }
   }
 
   // Function to update track data
   async function updateTrackData() {
-    const trackData = await fetchTrackData();
+    const trackData = await fetchDataFromNetlifyFunction();
     if (trackData) {
       const currentDate = new Date().toLocaleDateString("en-US", {
         timeZone: "Asia/Kolkata",
